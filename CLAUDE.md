@@ -4,13 +4,23 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Commands
 
-All development commands are managed via the root `Makefile`:
+### Backend Commands
+All backend development commands are managed via the root `Makefile`:
 
 - `make build` - Compile the Spring Boot backend using Maven
 - `make test` - Run tests with JaCoCo code coverage (minimum 80% required)
 - `make run` - Run the backend application locally on port 8080
 - `make docker-build` - Build Docker image for the backend
 - `make docker-run` - Run the backend in Docker container
+
+### Frontend Commands
+Frontend development commands are managed via npm scripts in the `frontend/` directory:
+
+- `cd frontend && npm run dev` - Start development server on port 8080
+- `cd frontend && npm run build` - Build for production
+- `cd frontend && npm run build:dev` - Build for development
+- `cd frontend && npm run lint` - Run ESLint
+- `cd frontend && npm run preview` - Preview production build
 
 ## Architecture
 
@@ -36,8 +46,44 @@ The backend is a defensive security application that provides image signature ve
 - Drew Noakes metadata-extractor for reading image metadata
 - TwelveMonkeys ImageIO extensions for enhanced format support
 
-### Frontend
-Placeholder directory - no implementation yet.
+### Frontend (React + TypeScript)
+The frontend is a modern React application built with Vite, TypeScript, and shadcn/ui components for the image signing and verification interface.
+
+**Core Components:**
+- `App.tsx` - Main application with routing setup using React Router
+- `ImageUpload.tsx` - Drag-and-drop image upload component with sign/verify modes
+- `ApiService` - HTTP client for backend API communication
+- `pages/Index.tsx` - Main page with tabbed interface for signing and verification
+- `components/ui/` - shadcn/ui component library for consistent UI
+
+**Key Features:**
+- Responsive drag-and-drop image upload interface
+- Tabbed interface for signing and verification workflows
+- Real-time upload progress and result feedback
+- Download functionality for signed images
+- File type validation (JPEG/PNG only)
+- Integration with backend REST API endpoints
+
+**Technology Stack:**
+- **React 18** with TypeScript for type-safe development
+- **Vite** for fast development and optimized builds
+- **shadcn/ui** + **Radix UI** for accessible component primitives
+- **Tailwind CSS** for utility-first styling
+- **React Router** for client-side routing
+- **TanStack Query** for API state management
+- **React Dropzone** for file upload functionality
+- **Lucide React** for icons
+- **React Hook Form** + **Zod** for form validation
+
+**API Integration:**
+- `POST /api/v1/sign` - Upload image for signing, returns signed image blob
+- `POST /api/v1/verify` - Upload signed image for verification, returns validation result
+- `GET /health` - Backend health check endpoint
+
+**Development:**
+- ESLint configuration with React and TypeScript rules
+- Path aliases configured (`@/` maps to `./src/`)
+- Development server runs on port 8080 (same as backend for simplicity)
 
 ## Key Management
 

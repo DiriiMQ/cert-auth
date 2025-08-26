@@ -71,12 +71,21 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Frontend (when implemented)
-node_modules/
-dist/
-build/
-.next/
-.nuxt/
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/.next/
+frontend/.nuxt/
+frontend/.turbo/
+frontend/coverage/
+frontend/.nyc_output/
+frontend/storybook-static/
+frontend/.eslintcache
+frontend/package-lock.json
+frontend/yarn.lock
+frontend/pnpm-lock.yaml
+frontend/bun.lockb
 
 # Docker
 .dockerignore

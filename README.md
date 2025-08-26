@@ -78,4 +78,6 @@ curl -X POST "http://localhost:8081/api/v1/verify" -F "file=@signed.png"
 
 ## Documentation
 
-See [CLAUDE.md](CLAUDE.md) for detailed development guidance, key management options, and deployment instructions.
+For detailed development guidance, key management options, and deployment instructions, see the individual README files in each service directory:
+- **Frontend**: [frontend/README.md](frontend/README.md) - React application setup and development
+- **Backend**: Backend development commands are available via the root `Makefile`

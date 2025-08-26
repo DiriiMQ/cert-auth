@@ -46,8 +46,10 @@ Thumbs.db
 # Text test files
 *.txt
 !README.md
-!CLAUDE.md
 !backend/README.md
+
+# Claude Code configuration
+CLAUDE.md
 
 # Cryptographic keys (security)
 *.pem

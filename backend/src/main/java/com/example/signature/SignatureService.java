@@ -56,24 +56,32 @@ public class SignatureService {
     }
 
     public boolean verify(byte[] data, String format) throws Exception {
-        byte[] digest = digest(data);
-        String jws;
-        if (format.equalsIgnoreCase("jpg") || format.equalsIgnoreCase("jpeg")) {
-            jws = extractJwsJpeg(data);
-        } else if (format.equalsIgnoreCase("png")) {
-            jws = extractJwsPng(data);
-        } else {
+        try {
+            byte[] digest = digest(data);
+            String jws;
+            if (format.equalsIgnoreCase("jpg") || format.equalsIgnoreCase("jpeg")) {
+                jws = extractJwsJpeg(data);
+            } else if (format.equalsIgnoreCase("png")) {
+                jws = extractJwsPng(data);
+            } else {
+                return false;
+            }
+            if (jws == null) {
+                return false;
+            }
+            JWSObject jwsObject = JWSObject.parse(jws, new Payload(digest));
+            return jwsObject.verify(verifier);
+        } catch (Exception e) {
+            // Invalid image data, JWS format, or verification failure
             return false;
         }
-        if (jws == null) {
-            return false;
-        }
-        JWSObject jwsObject = JWSObject.parse(jws, new Payload(digest));
-        return jwsObject.verify(verifier);
     }
 
     private byte[] digest(byte[] data) throws Exception {
         BufferedImage image = ImageIO.read(new ByteArrayInputStream(data));
+        if (image == null) {
+            throw new IllegalArgumentException("Invalid image data");
+        }
         DataBuffer buffer = image.getRaster().getDataBuffer();
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         for (int i = 0; i < buffer.getSize(); i++) {

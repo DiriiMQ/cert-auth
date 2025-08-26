@@ -82,11 +82,25 @@ frontend/
 
 ## 🏃‍♂️ Getting Started
 
-### Prerequisites
-- **Node.js** 18+ (install with [nvm](https://github.com/nvm-sh/nvm))
-- **npm** or **yarn** package manager
+### Docker Compose (Recommended)
+
+The easiest way to run the complete sign2shine application:
+
+```bash
+# From the project root directory
+docker compose up --build
+
+# Access the application at http://localhost:3000
+# Backend API available at http://localhost:8081
+```
 
 ### Local Development
+
+For frontend-only development:
+
+#### Prerequisites
+- **Node.js** 18+ (install with [nvm](https://github.com/nvm-sh/nvm))
+- **npm** or **yarn** package manager
 
 ```bash
 # Install dependencies
@@ -95,7 +109,7 @@ npm install
 # Start development server
 npm run dev
 
-# Open browser to http://localhost:8080
+# Frontend will auto-detect available port (usually 8080, 8081, or 8082)
 ```
 
 ### Build for Production
@@ -120,20 +134,23 @@ npx tsc --noEmit
 
 ## 🐳 Docker Usage
 
-### Development with Docker Compose
+### Full Stack with Docker Compose (Recommended)
 ```bash
-# Start both frontend and backend
+# From project root - start both frontend and backend
 docker compose up --build
 
-# Access application at http://localhost:3000
+# Access complete application:
+# - Frontend: http://localhost:3000
+# - Backend API: http://localhost:8081
+# - Health Check: http://localhost:8081/health
 ```
 
-### Production Docker Build
+### Frontend-Only Docker Build
 ```bash
-# Build production container
+# Build production container (frontend only)
 docker build -t sign2shine-frontend .
 
-# Run container
+# Run container (frontend only - requires separate backend)
 docker run -p 3000:80 sign2shine-frontend
 ```
 

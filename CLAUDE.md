@@ -4,6 +4,22 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Commands
 
+### Docker Compose Commands (Recommended)
+The entire application stack is orchestrated with Docker Compose:
+
+- `docker compose up --build` - Build and start both frontend and backend services
+- `docker compose up -d --build` - Start services in background (detached mode)
+- `docker compose down` - Stop and remove all services
+- `docker compose ps` - Show running container status
+- `docker compose logs` - View logs from all services
+- `docker compose logs frontend` - View frontend logs only
+- `docker compose logs backend` - View backend logs only
+
+**Service URLs:**
+- Frontend: http://localhost:3000 (React web interface)
+- Backend: http://localhost:8081 (REST API endpoints)
+- Health Check: http://localhost:8081/health
+
 ### Backend Commands
 All backend development commands are managed via the root `Makefile`:
 
@@ -16,7 +32,7 @@ All backend development commands are managed via the root `Makefile`:
 ### Frontend Commands
 Frontend development commands are managed via npm scripts in the `frontend/` directory:
 
-- `cd frontend && npm run dev` - Start development server on port 8080
+- `cd frontend && npm run dev` - Start development server (auto-detects available port)
 - `cd frontend && npm run build` - Build for production
 - `cd frontend && npm run build:dev` - Build for development
 - `cd frontend && npm run lint` - Run ESLint

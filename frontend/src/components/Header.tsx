@@ -1,5 +1,5 @@
 import React from 'react';
-import { Shield } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 
 export const Header: React.FC = () => {
   return (
@@ -7,10 +7,10 @@ export const Header: React.FC = () => {
       <div className="container mx-auto px-4 py-6">
         <div className="flex items-center justify-center space-x-3">
           <div className="flex items-center justify-center w-12 h-12 bg-primary rounded-lg">
-            <Shield className="h-6 w-6 text-primary-foreground" />
+            <Sparkles className="h-6 w-6 text-primary-foreground" />
           </div>
           <div className="text-center">
-            <h1 className="text-2xl font-bold text-foreground">ImageSign</h1>
+            <h1 className="text-2xl font-bold text-foreground">sign2shine</h1>
             <p className="text-sm text-muted-foreground">Secure Image Signing & Verification</p>
           </div>
         </div>

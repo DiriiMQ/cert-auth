@@ -2,8 +2,7 @@ package com.example.signature;
 
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.metadata.Metadata;
-import com.drew.metadata.png.PngTextDirectory;
-import com.drew.metadata.png.PngTextEntry;
+import com.drew.metadata.png.PngDirectory;
 import com.drew.metadata.xmp.XmpDirectory;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
@@ -11,8 +10,6 @@ import com.nimbusds.jose.JWSObject;
 import com.nimbusds.jose.Payload;
 import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jose.crypto.RSASSAVerifier;
-import org.apache.commons.imaging.ImageReadException;
-import org.apache.commons.imaging.ImageWriteException;
 import org.apache.commons.imaging.formats.jpeg.xmp.JpegXmpRewriter;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +28,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.KeyPair;
 import java.security.MessageDigest;
+import java.security.interfaces.RSAPublicKey;
 import java.util.Iterator;
 
 @Service
@@ -41,7 +39,7 @@ public class SignatureService {
 
     public SignatureService(KeyPair keyPair) {
         this.signer = new RSASSASigner(keyPair.getPrivate());
-        this.verifier = new RSASSAVerifier(keyPair.getPublic());
+        this.verifier = new RSASSAVerifier((RSAPublicKey) keyPair.getPublic());
     }
 
     public byte[] sign(byte[] data, String format) throws Exception {
@@ -88,7 +86,7 @@ public class SignatureService {
         return md.digest();
     }
 
-    private byte[] embedJwsJpeg(byte[] data, String jws) throws IOException, ImageReadException, ImageWriteException {
+    private byte[] embedJwsJpeg(byte[] data, String jws) throws Exception {
         String xmp = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<x:xmpmeta xmlns:x=\"adobe:ns:meta/\">" +
                 "<rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">" +
@@ -107,13 +105,20 @@ public class SignatureService {
         IIOMetadata metadata = writer.getDefaultImageMetadata(new ImageTypeSpecifier(image), param);
         String formatName = metadata.getNativeMetadataFormatName();
         IIOMetadataNode root = (IIOMetadataNode) metadata.getAsTree(formatName);
+        
+        // Only add iTXt metadata without modifying IHDR
         IIOMetadataNode text = new IIOMetadataNode("iTXt");
         IIOMetadataNode entry = new IIOMetadataNode("iTXtEntry");
         entry.setAttribute("keyword", "jws");
-        entry.setAttribute("value", jws);
+        entry.setAttribute("compressionFlag", "FALSE");
+        entry.setAttribute("compressionMethod", "0");
+        entry.setAttribute("languageTag", "");
+        entry.setAttribute("translatedKeyword", "jws");
+        entry.setAttribute("text", jws);
         text.appendChild(entry);
         root.appendChild(text);
         metadata.mergeTree(formatName, root);
+        
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ImageOutputStream ios = ImageIO.createImageOutputStream(baos);
         writer.setOutput(ios);
@@ -134,11 +139,23 @@ public class SignatureService {
 
     private String extractJwsPng(byte[] data) throws Exception {
         Metadata metadata = ImageMetadataReader.readMetadata(new ByteArrayInputStream(data));
-        for (PngTextDirectory dir : metadata.getDirectoriesOfType(PngTextDirectory.class)) {
-            if (dir.getTextEntries() != null) {
-                for (PngTextEntry entry : dir.getTextEntries()) {
-                    if ("jws".equals(entry.getKeyword())) {
-                        return entry.getText();
+        for (PngDirectory dir : metadata.getDirectoriesOfType(PngDirectory.class)) {
+            // Check all available tags
+            for (int i = 0; i < 1000; i++) { // Try a range of possible tag numbers
+                if (dir.hasTagName(i)) {
+                    String desc = dir.getDescription(i);
+                    if (desc != null && desc.contains("jws")) {
+                        // Handle different text formats
+                        if (desc.startsWith("jws: ")) {
+                            return desc.substring(5);
+                        } else if (desc.contains("jws=")) {
+                            return desc.substring(desc.indexOf("jws=") + 4);
+                        } else {
+                            String[] parts = desc.split(":", 2);
+                            if (parts.length == 2 && "jws".equals(parts[0].trim())) {
+                                return parts[1].trim();
+                            }
+                        }
                     }
                 }
             }

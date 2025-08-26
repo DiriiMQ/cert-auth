@@ -1,0 +1,95 @@
+# Java
+*.class
+*.jar
+*.war
+*.ear
+*.log
+*.ctxt
+
+# Maven
+backend/target/
+backend/.mvn/
+backend/mvnw
+backend/mvnw.cmd
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# Operating System
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Test images and signed files
+*.png
+*.jpg
+*.jpeg
+!backend/src/test/resources/**/*.png
+!backend/src/test/resources/**/*.jpg
+!backend/src/test/resources/**/*.jpeg
+
+# Text test files
+*.txt
+!README.md
+!CLAUDE.md
+!backend/README.md
+
+# Cryptographic keys (security)
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+
+# Environment files
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Frontend (when implemented)
+node_modules/
+dist/
+build/
+.next/
+.nuxt/
+
+# Docker
+.dockerignore
+
+# Cache
+.cache/
+.gradle/
+
+# Temporary test files created during development
+no_extension
+fake_signature.*
+signed_*
+test_*
+corrupted_*
+modified_*
+final_test_*
